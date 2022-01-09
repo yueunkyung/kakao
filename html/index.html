@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAKAO</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Titillium+Web:wght@200;300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/common.css">
+
+    <link rel="stylesheet" href="../css/swiper.css">
+    <link rel="stylesheet" href="../css/splitting.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" />
+
+    <link rel="stylesheet" href="../css/layout.css">
+
+
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script src="../js/swiper-bundle.min.js"></script>
+    <script src="../js/gsap/gsap.min.js"></script>
+    <script src="../js/splitting.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+    
+    <script src="../js/common.js" defer></script>
+</head>
+
+<body>
+    <div id="searchHeader">
+        <input type="text" id="searchTxt" name="" placeholder="검색할 이미지를 적어주세요.">
+        <button id="btnSearch">SEARCH</button>
+    </div>
+    <div id="recentSearchWord">
+        <ul class="list">
+
+        </ul>
+    </div>
+    <div id="searchResult">
+        <!--
+        <ul>
+            <li><img src="fjdkjsfds"></li>
+        </ul>
+        -->
+    </div>
+</body>
+<script>
+    //외출  방청소 하고 설겆이하고 강아지 밥주고 빨래도 하고 밥시켜먹기
+    const fruits = ["apple", "banana", "orange"];
+    fruits.push("melon");
+    fruits.push("plum");
+    fruits.push("pearl");
+    for (let i = 0; i < fruits.length; i++) {
+        console.log(fruits[i]);
+    }
+    //iteration 
+    $.each(fruits, function (i, item) {
+        //console.log(fruits[i]);
+        console.log(item);
+    });
+    let recentSeachWordArray
+    if(JSON.parse( localStorage.getItem("recentSeachWord") )   !== null ) {
+        recentSeachWordArray = JSON.parse( localStorage.getItem("recentSeachWord") );
+        $.each(recentSeachWordArray, function (i, item) {
+            $("#recentSearchWord .list").append(`<li>${item}</li>`);
+        });
+    } else {
+        recentSeachWordArray = [];
+    }
+
+    
+    //console.log(   JSON.parse( localStorage.getItem("recentSeachWord") ) );
+    //console.log( typeof  JSON.parse( localStorage.getItem("recentSeachWord") ) );
+    console.log(  JSON.parse( localStorage.getItem("recentSeachWord") ) );
+    
+
+    //recentSeachWordArray = JSON.parse( localStorage.getItem("recentSeachWord") );
+
+    $("#btnSearch").on("click", function () {
+        const sendSearchTxt = $("#searchTxt").val();
+        //loadKakaoImg(sendSearchTxt);
+        loadKakaoVclip(sendSearchTxt);
+    });
+
+    $("body").on("click","#recentSearchWord .list li", function () {
+        console.log($(this).index());
+        const sendSearchTxt = recentSeachWordArray[$(this).index()];
+        loadKakaoVclip(sendSearchTxt);
+        $(this).addClass("on").siblings().removeClass("on");
+    });
+
+    //
+    $("#searchTxt").on("keyup",function(e){
+        //console.log(e.keyCode,"====",e.charCode);
+        if(e.keyCode===13) {
+            const sendSearchTxt = $("#searchTxt").val();
+            //loadKakaoImg(sendSearchTxt);
+            loadKakaoVclip(sendSearchTxt);
+        }
+    });
+    //loadKakao("bts");
+    function loadKakaoVclip(searchTxt) {
+        $("#searchResult").html("");
+        $("#recentSearchWord .list").html("");
+        $.ajax({
+            url: "https://dapi.kakao.com//v2/search/vclip",
+            headers: {
+                Authorization: "KakaoAK 085a1b3d434e7a3ee19473f4f26d210e"
+            },
+            data: {
+                query: searchTxt,
+                size: 30
+            },
+            contentType: "json", //내가 보내는 데이터 타입을 적어준다.
+            dataType: "json", //내가 받는  데이터 타입을 적어준다.
+
+
+
+            success: function (data) {
+                //console.log(data);
+                if(!recentSeachWordArray.includes(searchTxt)){
+                    recentSeachWordArray.push(searchTxt);
+                    localStorage.setItem("recentSeachWord",JSON.stringify(recentSeachWordArray));
+                }
+
+                $.each(recentSeachWordArray, function (i, item) {
+                    $("#recentSearchWord .list").append(`<li>${item}</li>`)
+                });
+
+                const documents = data.documents; //카카오에서 넘어온 documents
+                $("#searchResult").append(`<ul class="list"></ul>`)
+                $.each(documents, function (i, item) {
+                    $("#searchResult .list").append(`
+                                                    <li>
+                                                        <a data-fancybox="single" data-src="${item.url}">
+                                                            <img src="${item.thumbnail}">
+                                                        </a>
+                                                    </li>`
+                                                    )
+                });
+                gsap.from("#searchResult .list li",{
+                                                    scale:0,
+                                                    ease:"power4",
+                                                    duration:1,
+                                                    //stagger:0.02
+                                                    stagger: {
+                                                        grid:"auto",
+                                                        //each:0.02  // 각각 하나씩 나오는 속도
+                                                        amount:0.5,   //전체가 다뿌려질때 속도
+                                                        from:"random" // center, edges, random
+                                                    }
+                                                })
+
+
+                //fancybox
+                Fancybox.bind("[data-fancybox]", {});
+            }
+            //async:false
+        });
+    }
+
+    function loadKakaoImg(searchTxt) {
+        $("#searchResult").html("");
+        $.ajax({
+            url: "https://dapi.kakao.com//v2/search/image",
+            headers: {
+                Authorization: "KakaoAK 085a1b3d434e7a3ee19473f4f26d210e"
+            },
+            data: {
+                query: searchTxt,
+                size: 40
+            },
+            contentType: "json", //내가 보내는 데이터 타입을 적어준다.
+            dataType: "json", //내가 받는  데이터 타입을 적어준다.
+            success: function (data) {
+                //console.log(data);
+                const documents = data.documents; //카카오에서 넘어온 documents
+                $("#searchResult").append(`<ul class="list"></ul>`)
+                $.each(documents, function (i, item) {
+                    $("#searchResult .list").append(`
+                                                    <li>
+                                                        <a data-fancybox="single" data-src="${item.image_url}">
+                                                            <img src="${item.thumbnail_url}">
+                                                        </a>
+                                                    </li>`
+                                                    )
+                });
+                gsap.from("#searchResult .list li",{
+                                                    scale:0,
+                                                    ease:"power4",
+                                                    duration:1,
+                                                    //stagger:0.02
+                                                    stagger: {
+                                                        grid:"auto",
+                                                        //each:0.02  // 각각 하나씩 나오는 속도
+                                                        amount:0.5,   //전체가 다뿌려질때 속도
+                                                        from:"random" // center, edges, random
+                                                    }
+                                                })
+
+
+                //fancybox
+                Fancybox.bind("[data-fancybox]", {});
+            }
+            //async:false
+        });
+    }
+</script>
+
+</html>
+
+<!--http://naver.me/G99IrYXQ-->
+
+

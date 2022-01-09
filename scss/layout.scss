@@ -1,0 +1,92 @@
+@import "vars";
+html,body {
+    height: 100%;
+}
+body {
+    font-family:'Titillium Web', 'Noto Sans KR',  sans-serif;
+    overflow: auto;
+}
+#searchHeader {
+    display: flex;
+    justify-content: center;
+    margin: 50px 0;
+    #searchTxt {
+        width:600px;
+        height:50px;
+        padding:10px 30px;
+        border: 1px solid #d9d9d9;
+        border-radius: 100px;
+    }
+    #btnSearch {
+        box-sizing: content-box;
+        height: 50px;
+        padding:10px 50px;
+        background-color: rgb(0, 122, 170);
+        border-radius: 100px;
+        margin-left: 20px;
+        font-size: 18px;
+        color:#fff;
+        overflow: hidden;
+        @include longShadow(darken(rgb(0, 122, 170),10),right,50);
+    }
+}
+
+#searchResult {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .list {
+        width:1200px;
+        display: flex;
+        //justify-content: center;
+        //align-items: center;
+        flex-wrap: wrap;
+        li {
+            position: relative;
+            &:hover:before {
+                border-width:5px;
+            }
+            &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top:0;
+                right:0;
+                bottom:0;
+                border:0 solid #f00;
+                transition: all 0.15s ease;
+                pointer-events: none;
+            }
+            img {
+                width:100px;
+            }
+        }
+    }
+}
+
+#recentSearchWord {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+    .list {
+        width:1200px;
+        display: flex;
+        flex-wrap: wrap;
+        li {
+            padding:15px 30px;
+            border:1px solid #d9d9d9;
+            margin: 5px;
+            border-radius: 100px;
+            cursor: pointer;
+            &:before {
+                content: "#";
+                display: inline-block;
+                margin-right: 5px;
+            }
+            &.on {
+                border-color: #111;
+            }
+        }
+    }
+}
