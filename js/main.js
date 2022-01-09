@@ -27,7 +27,6 @@ function searchImage(_img) {
             let output = "";
             searchResult.html("<ul></ul>");
             const resultUL = searchResult.find("ul");
-            $("#recentSearchWord").append();
             $.each(imgList, function (i, item) {
                 output += `
                     <li><a href="${item.image_url}" data-fancybox="gallery" data-caption="Optional caption"><img src="${item.thumbnail_url}"></a></li>
@@ -65,11 +64,13 @@ function searchVclip(_img) {
 $("#btnSearch").on("click", function () {
     const search = $("#searchTxt").val();
     searchVclip(search);
+    $("#recentSearchWord .list").append(`<li>${search}</li>`);
 });
 $("#searchTxt").on("keyup", function (e) {
-    console.log(e);
+    // console.log(e);
     if (e.keyCode === 13) {
         const search = $("#searchTxt").val();
         searchVclip(search);
+        $("#recentSearchWord .list").append(`<li>${search}</li>`);
     }
 });
