@@ -71,6 +71,11 @@ $("#searchTxt").on("keyup", function (e) {
     if (e.keyCode === 13) {
         const search = $("#searchTxt").val();
         searchVclip(search);
-        $("#recentSearchWord .list").append(`<li>${search}</li>`);
+        $("#recentSearchWord .list").append(`<li data-word="${search}">${search}</li>`);
     }
+});
+
+$("#recentSearchWord .list").on("click", "li", function () {
+    const search = $(this).data("word");
+    searchVclip(search);
 });
