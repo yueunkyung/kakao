@@ -1,6 +1,6 @@
 html, body { height: 100%; }
 
-body { font-family: 'Titillium Web', 'Noto Sans KR',  sans-serif; overflow: auto; }
+body { font-family: "Titillium Web", "Noto Sans KR", sans-serif; overflow: auto; }
 
 #searchHeader { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center; margin: 50px 0; }
 
@@ -10,15 +10,15 @@ body { font-family: 'Titillium Web', 'Noto Sans KR',  sans-serif; overflow: auto
 
 #searchResult { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center; -webkit-box-align: center; -ms-flex-align: center; align-items: center; }
 
-#searchResult .list { width: 1200px; display: -webkit-box; display: -ms-flexbox; display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; }
+#searchResult ul { width: 1200px; display: -webkit-box; display: -ms-flexbox; display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; }
 
-#searchResult .list li { position: relative; }
+#searchResult ul li { position: relative; }
 
-#searchResult .list li:hover:before { border-width: 5px; }
+#searchResult ul li:hover:before { border-width: 5px; }
 
-#searchResult .list li::before { content: ''; position: absolute; left: 0; top: 0; right: 0; bottom: 0; border: 0 solid #f00; -webkit-transition: all 0.15s ease; transition: all 0.15s ease; pointer-events: none; }
+#searchResult ul li::before { content: ""; position: absolute; left: 0; top: 0; right: 0; bottom: 0; border: 0 solid #f00; -webkit-transition: all 0.15s ease; transition: all 0.15s ease; pointer-events: none; }
 
-#searchResult .list li img { width: 100px; }
+#searchResult ul li img { width: 100px; }
 
 #recentSearchWord { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center; -webkit-box-align: center; -ms-flex-align: center; align-items: center; margin-bottom: 50px; }
 
