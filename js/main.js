@@ -14,7 +14,20 @@ let bb = aa;
 aa = 20;
 console.log(aa + "==" + bb); //result 20==10
 
+let tempStorage = JSON.parse(localStorage.getItem("recentSearchWord"));
+let recentSearchWordArray = tempStorage === null ? [] : tempStorage;
+// if (tempStorage === null) {
+//     recentSearchWordArray = [];
+// } else {
+//     recentSearchWordArray = tempStorage;
+// }
+
 const searchResult = $("#searchResult");
+
+$.each(recentSearchWordArray, function (i, item) {
+    $("#recentSearchWord .list").append(`<li><span>${item}</span></li>`);
+});
+
 function searchImage(_img) {
     $.ajax({
         url: `https://dapi.kakao.com/v2/search/image?query=${_img}&size=48`,
@@ -34,6 +47,11 @@ function searchImage(_img) {
             });
             resultUL.html(output);
             gsap.from("#searchResult li", { scale: 0, ease: "power4", stagger: 0.02 });
+            if (!recentSearchWordArray.includes(_img)) {
+                console.log("기존에 있는 검색어...");
+                recentSearchWordArray.push(_img);
+                localStorage.setItem("recentSearchWord", JSON.stringify(recentSearchWordArray));
+            }
         },
     });
 }
@@ -63,15 +81,17 @@ function searchVclip(_img) {
 
 $("#btnSearch").on("click", function () {
     const search = $("#searchTxt").val();
-    searchVclip(search);
-    $("#recentSearchWord .list").append(`<li>${search}</li>`);
+    // searchVclip(search);
+    searchImage(search);
+    // $("#recentSearchWord .list").append(`<li>${search}</li>`);
 });
 $("#searchTxt").on("keyup", function (e) {
     // console.log(e);
     if (e.keyCode === 13) {
         const search = $("#searchTxt").val();
-        searchVclip(search);
-        $("#recentSearchWord .list").append(`<li data-word="${search}">${search}</li>`);
+        // searchVclip(search);
+        searchImage(search);
+        // $("#recentSearchWord .list").append(`<li data-word="${search}">${search}</li>`);
     }
 });
 
