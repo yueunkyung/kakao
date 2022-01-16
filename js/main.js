@@ -24,11 +24,27 @@ let recentSearchWordArray = tempStorage === null ? [] : tempStorage;
 
 const searchResult = $("#searchResult");
 
-$.each(recentSearchWordArray, function (i, item) {
-    $("#recentSearchWord .list").append(`<li><span>${item}</span></li>`);
-});
-
+function appendRecentWord() {
+    let output = "";
+    $.each(recentSearchWordArray, function (i, item) {
+        output += `<li><span>${item}</span></li>`;
+    });
+    $("#recentSearchWord .list").html(output);
+}
+function overlap(_word) {
+    if (!recentSearchWordArray.includes(_word)) {
+        // console.log("기존에 있는 검색어...");
+        recentSearchWordArray.push(_word);
+        localStorage.setItem("recentSearchWord", JSON.stringify(recentSearchWordArray));
+    }
+}
+appendRecentWord();
 function searchImage(_img) {
+    if (_img.trim() === "") {
+        alert("검색어를 입력해 주세요.");
+        $("#searchTxt").val("").focus();
+        return;
+    }
     $.ajax({
         url: `https://dapi.kakao.com/v2/search/image?query=${_img}&size=48`,
         headers: {
@@ -47,11 +63,8 @@ function searchImage(_img) {
             });
             resultUL.html(output);
             gsap.from("#searchResult li", { scale: 0, ease: "power4", stagger: 0.02 });
-            if (!recentSearchWordArray.includes(_img)) {
-                console.log("기존에 있는 검색어...");
-                recentSearchWordArray.push(_img);
-                localStorage.setItem("recentSearchWord", JSON.stringify(recentSearchWordArray));
-            }
+            overlap(_img);
+            appendRecentWord();
         },
     });
 }
